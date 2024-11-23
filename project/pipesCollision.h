@@ -1,0 +1,10 @@
+#ifndef PIPESCOLLISION_H
+#define PIPESCOLLISION_H
+int numPipes;
+int pipeX[];
+int pipeY[];
+int pipeWidth;
+int pipeGap;
+int pipeSpeed;
+void checkCollision();
+#endif //PIPESCOLLISION_H
