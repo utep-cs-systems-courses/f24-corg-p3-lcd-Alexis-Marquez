@@ -2,11 +2,11 @@
 #include "lcd.h"
 #include "delay.h"
 #include "main.h"
-int numPipes = 4;
-int pipeX[4] = {100, 200, 300, 400};
-int pipeY[4];
+int numPipes = 3;
+int pipeX[3] = {100, 200, 300};
+int pipeY[3];
 int pipeWidth = 20;
-int pipeGap = 50;
+int pipeGap[4];
 int pipeSpeed = 2;
 
 void updatePipes() {
@@ -14,7 +14,7 @@ void updatePipes() {
         pipeX[i] -= pipeSpeed;
         if (pipeX[i] + pipeWidth < 0) {
             pipeX[i] = screenWidth;
-            pipeY[i] = randomGapHeight();
+            pipeGap[i] = randomGapHeight();
         }
     }
 }

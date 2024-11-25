@@ -7,4 +7,7 @@ int birdX;
 int birdY;
 int birdWidth;
 int birdHeight;
+int pause = 0;
+void jump();
+void reset();
 #endif //MAIN_H
