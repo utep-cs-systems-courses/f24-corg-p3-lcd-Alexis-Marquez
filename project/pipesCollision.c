@@ -1,12 +1,13 @@
 #include "pipesCollision.h"
-#include "lcd.h"
-#include "delay.h"
 #include "main.h"
+#include "lcdutils.h"
+#include "lcddraw.h"
+
 int numPipes = 3;
 int pipeX[3] = {100, 200, 300};
-int pipeY[3];
+int pipeY[3] = {20, 30, 40};
 int pipeWidth = 20;
-int pipeGap[4];
+int pipeGap[3] = {15, 50, 60};
 int pipeSpeed = 2;
 
 void updatePipes() {
@@ -19,17 +20,17 @@ void updatePipes() {
     }
 }
 int randomGapHeight() {
-    return rand() % (screenHeight - pipeGap);
+  return 20+ rand() % (screenHeight-19);
 }
-void checkCollisions() {
+void checkCollision() {
     for (int i = 0; i < numPipes; i++) {
         if (isColliding(birdX, birdY, birdWidth, birdHeight,
-                        pipeX[i], pipeY[i], pipeWidth, pipeHeight)) {
-            gameOver = 1;
+                        pipeX[i], pipeY[i], pipeWidth, pipeGap[i])) {
+	  gameOver = 1;
                         }
     }
     if (birdY <= 0 || birdY + birdHeight >= screenHeight) {
-        gameOver = 1;
+      gameOver = 1;
     }
 }
 
@@ -40,4 +41,3 @@ int isColliding(int birdX, int birdY, int birdWidth, int birdHeight,
              birdY + birdHeight < pipeY ||
              birdY > pipeY + pipeHeight);
 }
-

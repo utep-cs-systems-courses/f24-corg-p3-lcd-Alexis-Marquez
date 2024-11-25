@@ -1,12 +1,10 @@
 # makfile configuration
 
-COMMON_OBJECTS  =
+CPU             	= msp430g2553
 
-CPU             = msp430g2553
+CFLAGS          	= -mmcu=${CPU} -Os -I../h
 
-CFLAGS          = -mmcu=${CPU} -I../h
-
-LDFLAGS		= -L/opt/ti/msp430_gcc/include
+LDFLAGS		= -L../lib -L/opt/ti/msp430_gcc/include/
 
 
 
@@ -14,25 +12,25 @@ LDFLAGS		= -L/opt/ti/msp430_gcc/include
 
 CC              = msp430-elf-gcc
 
-AS              = msp430-elf-as
+AS              = msp430-elf-gcc -mmcu=${CPU} -c
 
 
 
-all: button.elf
+all:game.elf
 
 
 
 #additional rules for files
 
-button.elf: ${COMMON_OBJECTS} main.o pipesCollision.o ../lib/libTimer.a ../lcdLib/lcdLib.a
+game.elf: ${COMMON_OBJECTS} main.o wdt_handler.o pipesCollision.o
 
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd
 
 
 
-load: button.elf
+load: game.elf
 
-	msp430loader.sh button.elf
+	msp430loader.sh $^
 
 
 

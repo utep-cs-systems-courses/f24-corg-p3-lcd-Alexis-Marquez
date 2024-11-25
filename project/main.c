@@ -50,14 +50,22 @@ void draw_pipe(int x, int y, unsigned short color){
 
 }
 
-draw_pipes(){
+void draw_pipes(){
      for(int i=0; i < numPipes; i++){
-           draw_pipe(pipesX[i], pipesY[i], pipes[i].color);
+           draw_pipe(pipeX[i], pipeY[i], COLOR_GREEN);
        }
   }
 
+void jump(){
 
-void mainGameLoop(){
+}
+void reset(){
+  pipeX[0] = 100;
+  pipeX[1] = screenWidth;
+  pipeX[2] = screenWidth;
+}
+
+void main(){
     P1DIR |= LED;		/**< Green led on when CPU on */
     P1OUT |= LED;
     configureClocks();
@@ -75,10 +83,12 @@ void mainGameLoop(){
 void wdt_c_handler()
 {
     static int secCount = 0;
+    static int step = 0;
     secCount ++;
     if (secCount >= 25) {		/* 10/sec */
         if(!pause){
          updatePipes();
+	 draw_bird(20,20,COLOR_YELLOW);
          checkCollision();
          if (switches & SW2) jump();
         }
@@ -90,6 +100,5 @@ void wdt_c_handler()
               step = 0;
         secCount = 0;
         if (switches & SW4) return;
-        redrawScreen = 1;
     }
 }
