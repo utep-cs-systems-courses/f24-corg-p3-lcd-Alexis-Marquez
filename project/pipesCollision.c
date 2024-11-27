@@ -4,11 +4,11 @@
 #include "lcddraw.h"
 
 int numPipes = 3;
-int pipeX[3] = {100, 200, 300};
-int pipeY[3] = {20, 30, 40};
-int pipeWidth = 20;
+int pipeX[3] = {300, screenWidth, screenWidth};
+int pipeY[3] = {40, 50, 40};
+int pipeWidth = 25;
 int pipeGap[3] = {15, 50, 60};
-int pipeSpeed = 2;
+int pipeSpeed = 4;
 
 void updatePipes() {
     for (int i = 0; i < numPipes; i++) {
@@ -16,6 +16,7 @@ void updatePipes() {
         if (pipeX[i] + pipeWidth < 0) {
             pipeX[i] = screenWidth;
             pipeGap[i] = randomGapHeight();
+	    pipeY[i] = randomGapHeight();
         }
     }
 }
