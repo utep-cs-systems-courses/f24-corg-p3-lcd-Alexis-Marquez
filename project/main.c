@@ -92,9 +92,9 @@ int main(){
     or_sr(0x8);	              /**< GIE (enable interrupts) */
 
     clearScreen(COLOR_BLUE);
-        while (!gameOver) {
-            or_sr(0x10);
-        }
+    while (!gameOver) {
+        or_sr(0x10);
+    }
  }
 void wdt_c_handler()
 {
@@ -103,10 +103,10 @@ void wdt_c_handler()
     secCount ++;
     if (secCount >= 25) {		/* 10/sec */
         if(!pause){
-          clearScreen(COLOR_BLUE);
+         clearScreen(COLOR_BLUE);
          update_bird();
          updatePipes();
-	     draw_bird(20,20,COLOR_YELLOW);
+	     draw_bird(birdX,birdY,COLOR_YELLOW);
          draw_pipes();
          checkCollision();
          if (switches & SW2) jump();
