@@ -89,12 +89,9 @@ int main(){
     switch_init();
 
     enableWDTInterrupts();      /**< enable periodic interrupt */
-    or_sr(0x8);	              /**< GIE (enable interrupts) */
+    or_sr(0x18);	              /**< GIE (enable interrupts) */
 
     clearScreen(COLOR_BLUE);
-    while (!gameOver) {
-        or_sr(0x10);
-    }
  }
 void wdt_c_handler()
 {
