@@ -11,6 +11,7 @@ int birdX;
 int birdY;
 int birdWidth;
 int birdHeight;
+int gravity;
 int pause = 0;
 void jump();
 void reset();

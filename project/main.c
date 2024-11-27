@@ -34,6 +34,16 @@ switch_init()			/* setup switch */
     switch_update_interrupt_sense();
 }
 
+void game_init(){
+  pause = 0;
+  birdX = 100;
+  birdY = 100;
+  gameOver = 0;
+  birdWidth = 10;
+  birdHeight = 10;
+  gravity = 1;
+  }
+
 void
 switch_interrupt_handler()
 {
@@ -44,28 +54,34 @@ switch_interrupt_handler()
 void
 draw_bird(int col, int row, unsigned short color)
 {
-    fillRectangle(col-1, row-1, 3, 3, color);
+    fillRectangle(col-1, row-1, birdWidth, birdHeight, color);
 }
-void draw_pipe(int x, int y, unsigned short color){
-
+void draw_pipe(int x, int y, int gap, unsigned short color){
+    fillRectangle(x, 0, pipeWidth, y, color);
+    fillRectangle(x, y+gap, pipeWidth, screenHeight, color);
 }
 
 void draw_pipes(){
      for(int i=0; i < numPipes; i++){
-           draw_pipe(pipeX[i], pipeY[i], COLOR_GREEN);
+           draw_pipe(pipeX[i], pipeY[i], pipeGap[i], COLOR_GREEN);
        }
   }
 
 void jump(){
-
+    birdY -= gravity;
 }
+
+void update_bird(){
+      birdY -= gravity;
+  }
+
 void reset(){
   pipeX[0] = 100;
   pipeX[1] = screenWidth;
   pipeX[2] = screenWidth;
 }
 
-void main(){
+int main(){
     P1DIR |= LED;		/**< Green led on when CPU on */
     P1OUT |= LED;
     configureClocks();
@@ -87,8 +103,11 @@ void wdt_c_handler()
     secCount ++;
     if (secCount >= 25) {		/* 10/sec */
         if(!pause){
+          clearScreen(COLOR_BLUE);
+         update_bird();
          updatePipes();
-	 draw_bird(20,20,COLOR_YELLOW);
+	     draw_bird(20,20,COLOR_YELLOW);
+         draw_pipes();
          checkCollision();
          if (switches & SW2) jump();
         }
