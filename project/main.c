@@ -55,10 +55,12 @@ void
 draw_bird(int col, int row, unsigned short color)
 {
     fillRectangle(col, row, birdWidth, birdHeight, color);
+    fillRectangle(col, row+gravity, birdWidth, birdHeight, COLOR_BLUE);
 }
 void draw_pipe(int x, int y, int gap, unsigned short color){
     fillRectangle(x, 0, pipeWidth, y, color);
     fillRectangle(x, y+gap, pipeWidth, screenHeight, color);
+    fillRectangle(x+pipeSpeed, 0, pipeWidth, screenHeight, COLOR_BLUE);
 }
 
 void draw_pipes(){
@@ -69,6 +71,7 @@ void draw_pipes(){
 
 void jump(){
     birdY -= gravity;
+    fillRectangle(col, row-gravity, birdWidth, birdHeight, COLOR_BLUE);
 }
 
 void update_bird(){
@@ -97,13 +100,12 @@ void wdt_c_handler()
     static int step = 0;
     secCount ++;
     if (secCount >= 25/4) {		/* 10/sec */
-        if(!pause){
-	 update_bird();
+     if(!pause){
+	     update_bird();
          updatePipes();
-	 draw_bird(birdX,birdY,COLOR_YELLOW);
-	 draw_pipes();
+	     draw_bird(birdX,birdY,COLOR_YELLOW);
+	     draw_pipes();
          checkCollision();
-	 clearScreen(COLOR_BLUE);
         }
 	if (switches & SW2) jump();
         if (switches & SW3) pause ^= 1;
