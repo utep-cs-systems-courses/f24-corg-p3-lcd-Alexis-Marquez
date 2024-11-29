@@ -45,10 +45,21 @@ void game_init(){
   }
 
 void
+
 switch_interrupt_handler()
+
 {
     char p2val = switch_update_interrupt_sense();
-    switches = ~p2val & SWITCHES;
+
+    if (!(p2val & SW1)) {  // Check if Switch 1 is pressed
+        jump();
+    } else if (!(p2val & SW2)) {  // Check if Switch 2 is pressed
+        pause ^= 1;
+    } else if (!(p2val & SW3)) {  // Check if Switch 3 is pressed
+        reset();
+    } else if (!(p2val & SW4)) {  // Check if Switch 4 is pressed
+    }
+    switch_state_changed = 1;
 }
 
 void
@@ -99,12 +110,12 @@ void wdt_c_handler()
 {
     static int secCount = 0;
     secCount ++;
-    if (secCount >= 25/2) {		/* 10/sec */
+    if (secCount >= 25/3) {		/* 10/sec */
      if(!pause){
        //update_bird();
          updatePipes();
-       // draw_bird(birdX,birdY,COLOR_BLACK);
-	 draw_pipes();
+         draw_bird(100,100,COLOR_BLACK);
+	     draw_pipes();
          checkCollision();
         }
         secCount = 0;
