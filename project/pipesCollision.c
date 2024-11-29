@@ -2,26 +2,27 @@
 #include "main.h"
 #include "lcdutils.h"
 #include "lcddraw.h"
+#include <stdlib.h>
 
 int numPipes = 3;
-int pipeX[3] = {300, screenWidth, screenWidth};
-int pipeY[3] = {40, 50, 40};
+int pipeX[3] = {screenWidth-50, screenWidth+20, screenWidth+90};
+int pipeY[3] = {40, 60, 40};
 int pipeWidth = 25;
-int pipeGap[3] = {15, 50, 60};
-int pipeSpeed = 4;
+int pipeGap[3] = {30, 20, 40};
+int pipeSpeed = 2;
 
 void updatePipes() {
     for (int i = 0; i < numPipes; i++) {
         pipeX[i] -= pipeSpeed;
         if (pipeX[i] + pipeWidth < 0) {
-            pipeX[i] = screenWidth;
+            pipeX[i] = screenWidth+50;
             pipeGap[i] = randomGapHeight();
-	    pipeY[i] = randomGapHeight();
+	    pipeY[i] = screenHeight - pipeGap[i]-randomGapHeight();
         }
     }
 }
 int randomGapHeight() {
-  return 20+ rand() % (screenHeight-19);
+  return 20 + rand() % (40 + 1);;
 }
 void checkCollision() {
     for (int i = 0; i < numPipes; i++) {

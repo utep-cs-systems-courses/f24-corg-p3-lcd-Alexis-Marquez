@@ -7,5 +7,6 @@ int pipeWidth;
 int pipeGap[3];
 int pipeSpeed;
 void checkCollision();
-
+int isColliding();
+int randomGapHeight();
 #endif //PIPESCOLLISION_H

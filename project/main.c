@@ -39,8 +39,8 @@ void game_init(){
   birdX = 100;
   birdY = 100;
   gameOver = 0;
-  birdWidth = 20;
-  birdHeight = 20;
+  birdWidth = 10;
+  birdHeight = 10;
   gravity = 1;
   }
 
@@ -60,18 +60,19 @@ draw_bird(int col, int row, unsigned short color)
 void draw_pipe(int x, int y, int gap, unsigned short color){
     fillRectangle(x, 0, pipeWidth, y, color);
     fillRectangle(x, y+gap, pipeWidth, screenHeight, color);
-    fillRectangle(x+pipeSpeed, 0, pipeWidth, screenHeight, COLOR_BLUE);
+    fillRectangle(x+pipeWidth, 0, pipeSpeed, screenHeight, COLOR_BLUE);
 }
 
 void draw_pipes(){
      for(int i=0; i < numPipes; i++){
+       if(pipeX[i]<screenWidth)
            draw_pipe(pipeX[i], pipeY[i], pipeGap[i], COLOR_GREEN);
        }
   }
 
 void jump(){
     birdY -= gravity;
-    fillRectangle(col, row-gravity, birdWidth, birdHeight, COLOR_BLUE);
+    fillRectangle(birdX, birdY-gravity, birdWidth, birdHeight, COLOR_BLUE);
 }
 
 void update_bird(){
@@ -79,9 +80,9 @@ void update_bird(){
   }
 
 void reset(){
-  pipeX[0] = 100;
+  pipeX[0] = screenWidth-50;
   pipeX[1] = screenWidth;
-  pipeX[2] = screenWidth;
+  pipeX[2] = screenWidth+50;
 }
 
 int main(){
@@ -97,23 +98,15 @@ int main(){
 void wdt_c_handler()
 {
     static int secCount = 0;
-    static int step = 0;
     secCount ++;
-    if (secCount >= 25/4) {		/* 10/sec */
+    if (secCount >= 25/2) {		/* 10/sec */
      if(!pause){
-	     update_bird();
+       //update_bird();
          updatePipes();
-	     draw_bird(birdX,birdY,COLOR_YELLOW);
-	     draw_pipes();
+       // draw_bird(birdX,birdY,COLOR_BLACK);
+	 draw_pipes();
          checkCollision();
         }
-	if (switches & SW2) jump();
-        if (switches & SW3) pause ^= 1;
-        if (switches & SW1) reset();
-        if (step <= 30/3)
-            step ++;
-        else
-              step = 0;
         secCount = 0;
     }
 }

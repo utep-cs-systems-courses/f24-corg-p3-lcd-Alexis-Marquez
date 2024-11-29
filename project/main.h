@@ -15,4 +15,5 @@ int gravity;
 int pause;
 void jump();
 void reset();
+void update_bird();
 #endif //MAIN_H
