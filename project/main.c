@@ -36,12 +36,13 @@ switch_init()			/* setup switch */
 
 void game_init(){
   pause = 0;
-  birdX = 100;
-  birdY = 100;
+  birdX = screenWidth/4;
+  birdY = screenHeight/2;
   gameOver = 0;
-  birdWidth = 10;
-  birdHeight = 10;
-  gravity = 1;
+  birdWidth = 5;
+  birdHeight = 5;
+  gravity = 3;
+  jumpForce = 15;
   }
 
 void
@@ -55,18 +56,17 @@ switch_interrupt_handler()
         jump();
     } else if (!(p2val & SW2)) {  // Check if Switch 2 is pressed
         pause ^= 1;
+	clearScreen(COLOR_BLUE);
     } else if (!(p2val & SW3)) {  // Check if Switch 3 is pressed
         reset();
     } else if (!(p2val & SW4)) {  // Check if Switch 4 is pressed
     }
-    switch_state_changed = 1;
 }
 
 void
 draw_bird(int col, int row, unsigned short color)
 {
     fillRectangle(col, row, birdWidth, birdHeight, color);
-    fillRectangle(col, row+gravity, birdWidth, birdHeight, COLOR_BLUE);
 }
 void draw_pipe(int x, int y, int gap, unsigned short color){
     fillRectangle(x, 0, pipeWidth, y, color);
@@ -82,15 +82,18 @@ void draw_pipes(){
   }
 
 void jump(){
-    birdY -= gravity;
-    fillRectangle(birdX, birdY-gravity, birdWidth, birdHeight, COLOR_BLUE);
+    birdY -= jumpForce;
+    fillRectangle(birdX, birdY+jumpForce, birdWidth, birdHeight, COLOR_BLUE);
 }
 
 void update_bird(){
-      birdY -= gravity;
+      birdY += gravity;
+      fillRectangle(birdX, birdY - gravity, birdWidth, birdHeight, COLOR_BLUE);
   }
 
 void reset(){
+  clearScreen(COLOR_BLUE);
+  game_init();
   pipeX[0] = screenWidth-50;
   pipeX[1] = screenWidth;
   pipeX[2] = screenWidth+50;
@@ -102,6 +105,7 @@ int main(){
     configureClocks();
     lcd_init();
     switch_init();
+    game_init();
     clearScreen(COLOR_BLUE);
     enableWDTInterrupts();      /**< enable periodic interrupt */
     or_sr(0x18);	              /**< GIE (enable interrupts) */
@@ -110,14 +114,24 @@ void wdt_c_handler()
 {
     static int secCount = 0;
     secCount ++;
-    if (secCount >= 25/3) {		/* 10/sec */
-     if(!pause){
-       //update_bird();
+    if (secCount >= 25/3) {
+      /* 10/sec */
+      if(!gameOver){
+	if(!pause){
+         update_bird();
          updatePipes();
-         draw_bird(100,100,COLOR_BLACK);
-	     draw_pipes();
+         draw_bird(birdX,birdY,COLOR_YELLOW);
+	 draw_pipes();
          checkCollision();
         }
-        secCount = 0;
+	if(pause){
+	  drawString5x7(screenWidth/2, screenHeight/2, "Pause", COLOR_YELLOW, COLOR_BLUE);
+	  }
+      }
+      else{
+	pause = 1;
+	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
+      }
+       secCount = 0;
     }
 }

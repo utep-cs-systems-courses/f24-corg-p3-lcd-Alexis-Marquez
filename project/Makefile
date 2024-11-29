@@ -22,7 +22,7 @@ all:game.elf
 
 #additional rules for files
 
-game.elf: ${COMMON_OBJECTS} main.o wdt_handler.o pipesCollision.o
+game.elf: ${COMMON_OBJECTS} main.o p1_interrupt_handler.o wdt_handler.s pipesCollision.o
 
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd
 

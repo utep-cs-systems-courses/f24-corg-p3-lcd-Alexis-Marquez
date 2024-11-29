@@ -8,7 +8,7 @@ int numPipes = 3;
 int pipeX[3] = {screenWidth-50, screenWidth+20, screenWidth+90};
 int pipeY[3] = {40, 60, 40};
 int pipeWidth = 25;
-int pipeGap[3] = {30, 20, 40};
+int pipeGap[3] = {30, 30, 40};
 int pipeSpeed = 2;
 
 void updatePipes() {
@@ -22,7 +22,7 @@ void updatePipes() {
     }
 }
 int randomGapHeight() {
-  return 20 + rand() % (40 + 1);;
+  return 30 + rand() % (40 + 1);;
 }
 void checkCollision() {
     for (int i = 0; i < numPipes; i++) {
@@ -37,9 +37,12 @@ void checkCollision() {
 }
 
 int isColliding(int birdX, int birdY, int birdWidth, int birdHeight,
-                int pipeX, int pipeY, int pipeWidth, int pipeHeight) {
-    return !(birdX + birdWidth < pipeX ||
-             birdX > pipeX + pipeWidth ||
-             birdY + birdHeight < pipeY ||
-             birdY > pipeY + pipeHeight);
+                int pipeX, int pipeY, int pipeWidth, int gap) {
+  if(birdX < pipeX + pipeWidth && birdX + birdWidth > pipeX && birdY < pipeY){
+    return 1;
+  }
+  if(birdX < pipeX + pipeWidth && birdX + birdWidth > pipeX && birdY + birdHeight > pipeY + gap){
+    return 1;
+  }
+    return 0;
 }
