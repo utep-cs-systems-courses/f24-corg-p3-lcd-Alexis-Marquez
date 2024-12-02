@@ -4,6 +4,7 @@
 #include <libTimer.h>
 #include "lcdutils.h"
 #include "lcddraw.h"
+#include "buzzer.h"
 
 #define LED BIT6
 
@@ -84,6 +85,7 @@ void draw_pipes(){
 void jump(){
     birdY -= jumpForce;
     fillRectangle(birdX, birdY+jumpForce, birdWidth, birdHeight, COLOR_BLUE);
+    buzzer_set_period(3817);
 }
 
 void update_bird(){
@@ -106,6 +108,7 @@ int main(){
     lcd_init();
     switch_init();
     game_init();
+    buzzer_init();
     clearScreen(COLOR_BLUE);
     enableWDTInterrupts();      /**< enable periodic interrupt */
     or_sr(0x18);	              /**< GIE (enable interrupts) */
