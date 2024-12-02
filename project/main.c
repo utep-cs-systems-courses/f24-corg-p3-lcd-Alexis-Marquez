@@ -44,6 +44,7 @@ void game_init(){
   birdHeight = 5;
   gravity = 3;
   jumpForce = 15;
+  mute = 0;
   }
 
 void
@@ -61,6 +62,7 @@ switch_interrupt_handler()
     } else if (!(p2val & SW3)) {  // Check if Switch 3 is pressed
         reset();
     } else if (!(p2val & SW4)) {  // Check if Switch 4 is pressed
+      mute ^= 1;
     }
 }
 
@@ -85,7 +87,7 @@ void draw_pipes(){
 void jump(){
     birdY -= jumpForce;
     fillRectangle(birdX, birdY+jumpForce, birdWidth, birdHeight, COLOR_BLUE);
-    buzzer_set_period(3817);
+    if(!mute)buzzer_set_period(3817);
 }
 
 void update_bird(){
@@ -100,6 +102,13 @@ void reset(){
   pipeX[1] = screenWidth;
   pipeX[2] = screenWidth+50;
 }
+
+void playSong(int tempo){
+  if(tempo==125) buzzer_set_period(6810);
+  else if(tempo==250) buzzer_set_period(6067);
+  else if(tempo==375) buzzer_set_period(5406);
+  else if(tempo==500) buzzer_set_period(5102);
+  }
 
 int main(){
     P1DIR |= LED;		/**< Green led on when CPU on */
@@ -116,15 +125,20 @@ int main(){
 void wdt_c_handler()
 {
     static int secCount = 0;
+    static int tempo = 0;
     secCount ++;
+    tempo++;
     if (secCount >= 25/3) {
-      /* 10/sec */
+      /* 30/sec */
       if(!gameOver){
 	if(!pause){
+         if(!mute){
+			playSong(tempo);
+           }
          update_bird();
          updatePipes();
          draw_bird(birdX,birdY,COLOR_YELLOW);
-	 draw_pipes();
+	     draw_pipes();
          checkCollision();
         }
 	if(pause){
@@ -136,5 +150,6 @@ void wdt_c_handler()
 	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
       }
        secCount = 0;
+       if(tempo>=500){tempo=0;}
     }
 }

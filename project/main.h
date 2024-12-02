@@ -14,6 +14,7 @@ int birdWidth;
 int birdHeight;
 int gravity;
 int pause;
+int mute;
 void jump();
 void reset();
 void update_bird();
