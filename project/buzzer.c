@@ -4,11 +4,6 @@
 
 #include "buzzer.h"
 
-#include "led.h"
-
-#include "switches.h"
-
-
 void buzzer_init()
 
 {
