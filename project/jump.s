@@ -11,7 +11,6 @@
 	.extern birdWidth
 	.extern birdHeight
 	.extern jumpForce
-	.extern COLOR_BLUE
 	.extern mute
     .extern fillRectangle
 
@@ -23,7 +22,7 @@ jump:
     add &jumpForce, r13
     mov &birdWidth, r14
     mov &birdHeight, r15
-    push &COLOR_BLUE
+    push #0xf800
     call #fillRectangle
 
 	cmp #0, &mute
