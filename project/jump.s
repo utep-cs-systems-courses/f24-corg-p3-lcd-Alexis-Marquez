@@ -23,7 +23,7 @@ jump:
     add &jumpForce, r13
     mov &birdWidth, r14
     mov &birdHeight, r15
-    mov &COLOR_BLUE, r16
+    push &COLOR_BLUE
     call #fillRectangle
 
 	cmp #0, &mute
