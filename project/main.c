@@ -162,12 +162,12 @@ void draw_screen_and_sound(){
         }
 	if(pause){
 	  buzzer_set_period(0);
-	  drawString5x7(screenWidth/2, screenHeight/2, "Pause", COLOR_YELLOW, COLOR_BLUE);
+	  drawString8x12(screenWidth/2, screenHeight/2, "Pause", COLOR_YELLOW, COLOR_BLUE);
 	  }
       }
       else{
 	pause = 1;
 	buzzer_set_period(0);
-	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
+	drawString8x12(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
       }
   }
