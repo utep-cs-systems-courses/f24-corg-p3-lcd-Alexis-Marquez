@@ -24,10 +24,9 @@ jump:
     mov &birdHeight, r15
     push #0xf800
     call #fillRectangle
-    add #2, SP	
-	
-	cmp #0, &mute
-	jnz on
+    add #2, SP		
+    cmp #0, &mute
+	jz on
 
 	pop r0
 
