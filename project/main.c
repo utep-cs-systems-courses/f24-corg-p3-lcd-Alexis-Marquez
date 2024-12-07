@@ -87,11 +87,11 @@ void draw_pipes(){
        }
   }
 
-void jump(){
-    birdY -= jumpForce;
-    fillRectangle(birdX, birdY+jumpForce, birdWidth, birdHeight, COLOR_BLUE);
-    if(!mute){buzzer_set_period(0); buzzer_set_period(3817);}
-}
+//void jump(){
+//    birdY -= jumpForce;
+//    fillRectangle(birdX, birdY+jumpForce, birdWidth, birdHeight, COLOR_BLUE);
+//    if(!mute){buzzer_set_period(0); buzzer_set_period(3817);}
+//}
 
 void update_bird(){
       birdY += gravity;
@@ -122,8 +122,10 @@ int main(){
     game_init();
     buzzer_init();
     clearScreen(COLOR_BLUE);
+
     enableWDTInterrupts();      /**< enable periodic interrupt */
-    or_sr(0x18);
+    or_sr(0x8);
+
     while (1) {			/* forever */
     if (redrawScreen) {
       redrawScreen = 0;
