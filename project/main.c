@@ -106,7 +106,7 @@ void reset(){
   pipeX[2] = screenWidth+50;
 }
 
-void playSong(int tempo){
+void playSong(){
   if(tempo>=1 & tempo < 25) buzzer_set_period(6810);
   else if(tempo>=25 & tempo < 50) buzzer_set_period(6067);
   else if(tempo>=50 & tempo < 75) buzzer_set_period(5406);
@@ -123,7 +123,16 @@ int main(){
     buzzer_init();
     clearScreen(COLOR_BLUE);
     enableWDTInterrupts();      /**< enable periodic interrupt */
-    or_sr(0x18);	              /**< GIE (enable interrupts) */
+    or_sr(0x18);
+    while (1) {			/* forever */
+    if (redrawScreen) {
+      redrawScreen = 0;
+      draw_screen_and_sound();
+    }
+    P1OUT &= ~LED;	/* led off */
+    or_sr(0x10);	/**< CPU OFF */
+    P1OUT |= LED;	/* led on */
+  }
  }
 void wdt_c_handler()
 {
@@ -132,7 +141,14 @@ void wdt_c_handler()
     tempo++;
     if (secCount >= 25/3) {
       /* 30/sec */
-      if(!gameOver){
+	   draw_screen_and_sound();
+       secCount = 0;
+    }
+    if(tempo>=100){tempo=0;}
+}
+
+void draw_screen_and_sound(){
+   if(!gameOver){
 	if(!pause){
 	  if(!mute){
 	    playSong(tempo);}
@@ -152,7 +168,4 @@ void wdt_c_handler()
 	buzzer_set_period(0);
 	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
       }
-       secCount = 0;
-    }
-    if(tempo>=100){tempo=0;}
-}
+  }

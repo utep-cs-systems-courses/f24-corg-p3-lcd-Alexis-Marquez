@@ -19,4 +19,5 @@ void jump();
 void reset();
 void update_bird();
 void switch_interrupt_handler();
+void draw_screen_and_sound();
 #endif //MAIN_H
