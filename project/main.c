@@ -47,6 +47,7 @@ void game_init(){
   gravity = 3;
   jumpForce = 15;
   mute = 0;
+  redrawScreen = 1;
   }
 
 void
@@ -55,7 +56,6 @@ switch_interrupt_handler()
 
 {
     char p2val = switch_update_interrupt_sense();
-    redrawScreen = 1;
     if (!(p2val & SW1)) {  // Check if Switch 1 is pressed
         jump();
     } else if (!(p2val & SW2)) {  // Check if Switch 2 is pressed
@@ -107,9 +107,9 @@ void reset(){
 }
 
 void playSong(){
-  if(tempo>=1 & tempo < 25) buzzer_set_period(6810);
-  else if(tempo>=25 & tempo < 50) buzzer_set_period(6067);
-  else if(tempo>=50 & tempo < 75) buzzer_set_period(5406);
+  if(tempo>=1 && tempo < 25) buzzer_set_period(6810);
+  else if(tempo>=25 && tempo < 50) buzzer_set_period(6067);
+  else if(tempo>=50 && tempo < 75) buzzer_set_period(5406);
   else if(tempo>=75) buzzer_set_period(5102);
   }
 
@@ -124,16 +124,12 @@ int main(){
     clearScreen(COLOR_BLUE);
 
     enableWDTInterrupts();      /**< enable periodic interrupt */
-    or_sr(0x8);
-
+    or_sr(0x18);
     while (1) {			/* forever */
      if (redrawScreen) {
-       draw_screen_and_sound();
+       // draw_screen_and_sound();
        redrawScreen = 0;
      }
-     P1OUT &= ~LED;	/* led off */
-     or_sr(0x10);	/**< CPU OFF */
-     P1OUT |= 1;	/* led on */
   }
  }
 void wdt_c_handler()
@@ -143,7 +139,8 @@ void wdt_c_handler()
     tempo++;
     if (secCount >= 25/3) {
       /* 30/sec */
-       redrawScreen = 1;
+      redrawScreen = 1;
+      draw_screen_and_sound();
        secCount = 0;
     }
     if(tempo>=100){tempo=0;}
@@ -151,23 +148,27 @@ void wdt_c_handler()
 
 void draw_screen_and_sound(){
    if(!gameOver){
+      P1OUT|=~1;
 	if(!pause){
 	  if(!mute){
-	    playSong(tempo);}
+	    playSong(tempo);
+	  }
          update_bird();
          updatePipes();
          draw_bird(birdX,birdY,COLOR_YELLOW);
-	     draw_pipes();
+	 draw_pipes();
          checkCollision();
         }
 	if(pause){
 	  buzzer_set_period(0);
-	  drawString5x7(screenWidth/2, screenHeight/2, "PAUSE", COLOR_YELLOW, COLOR_BLUE);
+	  drawString5x7(screenWidth/2, screenHeight/2, "PAUSE", COLOR_YELLOW, COLOR_BLUE);	 
 	  }
       }
       else{
 	pause = 1;
 	buzzer_set_period(0);
 	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
+	P1OUT|=1;
+	or_sr(0x18);
       }
   }
