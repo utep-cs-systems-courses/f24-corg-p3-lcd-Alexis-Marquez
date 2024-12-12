@@ -124,12 +124,17 @@ int main(){
     clearScreen(COLOR_BLUE);
 
     enableWDTInterrupts();      /**< enable periodic interrupt */
-    or_sr(0x18);
+    or_sr(0x8);
     while (1) {			/* forever */
      if (redrawScreen) {
-       // draw_screen_and_sound();
        redrawScreen = 0;
+       draw_screen_and_sound();
      }
+     P1OUT &= LED;/* led off */
+
+     or_sr(0x10);/**< CPU OFF */
+
+     P1OUT |= LED;
   }
  }
 void wdt_c_handler()
@@ -137,10 +142,9 @@ void wdt_c_handler()
     static int secCount = 0;
     secCount ++;
     tempo++;
-    if (secCount >= 25/3) {
+    if (secCount >= 25) {
       /* 30/sec */
-      redrawScreen = 1;
-      draw_screen_and_sound();
+       redrawScreen = 1;
        secCount = 0;
     }
     if(tempo>=100){tempo=0;}
@@ -148,8 +152,9 @@ void wdt_c_handler()
 
 void draw_screen_and_sound(){
    if(!gameOver){
-      P1OUT|=~1;
+     P1OUT|=~1;
 	if(!pause){
+	  P1OUT |= ~1;
 	  if(!mute){
 	    playSong(tempo);
 	  }
@@ -161,14 +166,16 @@ void draw_screen_and_sound(){
         }
 	if(pause){
 	  buzzer_set_period(0);
-	  drawString5x7(screenWidth/2, screenHeight/2, "PAUSE", COLOR_YELLOW, COLOR_BLUE);	 
+	  drawString5x7(screenWidth/2, screenHeight/2, "PAUSE", COLOR_YELLOW, COLOR_BLUE);
+	  P1OUT |= 1;
+	  or_sr(0x18);
 	  }
       }
       else{
 	pause = 1;
 	buzzer_set_period(0);
 	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
-	P1OUT|=1;
+	P1OUT |=1;
 	or_sr(0x18);
       }
   }
