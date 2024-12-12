@@ -55,7 +55,7 @@ switch_interrupt_handler()
 
 {
     char p2val = switch_update_interrupt_sense();
-
+    redrawScreen = 1;
     if (!(p2val & SW1)) {  // Check if Switch 1 is pressed
         jump();
     } else if (!(p2val & SW2)) {  // Check if Switch 2 is pressed
@@ -127,13 +127,13 @@ int main(){
     or_sr(0x8);
 
     while (1) {			/* forever */
-    if (redrawScreen) {
-      redrawScreen = 0;
-      draw_screen_and_sound();
-    }
-    P1OUT &= ~LED;	/* led off */
-    or_sr(0x10);	/**< CPU OFF */
-    P1OUT |= LED;	/* led on */
+     if (redrawScreen) {
+       draw_screen_and_sound();
+       redrawScreen = 0;
+     }
+     P1OUT &= ~LED;	/* led off */
+     or_sr(0x10);	/**< CPU OFF */
+     P1OUT |= 1;	/* led on */
   }
  }
 void wdt_c_handler()
@@ -143,7 +143,7 @@ void wdt_c_handler()
     tempo++;
     if (secCount >= 25/3) {
       /* 30/sec */
-	   draw_screen_and_sound();
+       redrawScreen = 1;
        secCount = 0;
     }
     if(tempo>=100){tempo=0;}
@@ -162,12 +162,12 @@ void draw_screen_and_sound(){
         }
 	if(pause){
 	  buzzer_set_period(0);
-	  drawString8x12(screenWidth/2, screenHeight/2, "Pause", COLOR_YELLOW, COLOR_BLUE);
+	  drawString5x7(screenWidth/2, screenHeight/2, "PAUSE", COLOR_YELLOW, COLOR_BLUE);
 	  }
       }
       else{
 	pause = 1;
 	buzzer_set_period(0);
-	drawString8x12(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
+	drawString5x7(screenWidth/2, screenHeight/2, "GAME OVER", COLOR_RED, COLOR_BLUE);
       }
   }
